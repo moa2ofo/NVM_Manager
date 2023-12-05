@@ -21,7 +21,6 @@ typedef struct NvmMngr_NvmBlock_s
   uint8_t  prelationFactor_u8;
   uint8_t  dataOffset_u8;
   uint8_t  dataLen_u8;
-  uint8_t position_u8;
   bool     writeRequest_b;
 }NvmMngr_NvmBlock_t;
 

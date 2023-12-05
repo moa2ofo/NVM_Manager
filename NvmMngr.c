@@ -18,14 +18,13 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
   .pageCopy_u8 = {0},
   .pageComposition={
     {DID_F194_ADRESS,DID_F194_SIZE},
-    {DID_F1F0_ADRESS,DID_F1F0_SIZE},
-    {DID_F192_ADRESS,DID_F192_SIZE},
-    {DID_F193_ADRESS,DID_F193_SIZE},
-    {DID_F18A_ADRESS,DID_F18A_SIZE},
-    {DID_F17C_ADRESS,DID_F17C_SIZE},
-    {DID_F191_ADRESS,DID_F191_SIZE},
-    {DID_F197_ADRESS,DID_F197_SIZE},
-    {DID_F1A3_ADRESS,DID_F1A3_SIZE}
+//    {DID_F195_ADRESS,DID_F195_SIZE},
+//    {DID_040F_ADRESS,DID_040F_SIZE},
+//    {DID_F187_ADRESS,DID_F187_SIZE},
+//    {DID_F189_ADRESS,DID_F189_SIZE},
+//    {DID_F19E_ADRESS,DID_F19E_SIZE},
+//    {DID_F1A2_ADRESS,DID_F1A2_SIZE},
+//    {DID_F1D5_ADRESS,DID_F1D5_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
   .dataOffset_u8 = 0,
@@ -52,97 +51,60 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
   .prelationFactor_u8 = 0xFF,
   .dataOffset_u8 = 0,
   .dataLen_u8 = 0,
-  .position_u8 = 0,
   .writeRequest_b = false
 
  },
+ /* Reset reason */
  {
   .startAdress_u32=RESET_CNT_ADR,
   .crc32Ethernet_32 = 0,
   .pageCopy_u8 = {0},
   .pageComposition={
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
+    {RESET_CNT_ADR,RESET_CNT_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
   .dataOffset_u8 = 0,
   .dataLen_u8 = 0,
-  .position_u8 = 0,
   .writeRequest_b = false
 
  },
+ /* Calibration */
  {
   .startAdress_u32=CALIBRATION_ADR,
   .crc32Ethernet_32 = 0,
   .pageCopy_u8 = {0},
   .pageComposition={
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
+    {CALIBRATION_ADR,CALIBRATION_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
   .dataOffset_u8 = 0,
   .dataLen_u8 = 0,
-  .position_u8 = 0,
   .writeRequest_b = false
  },
+ /*EOL Flag */
  {
   .startAdress_u32=EOL_LOCK_FLAG_ADR,
   .crc32Ethernet_32 = 0,
   .pageCopy_u8 = {0},
   .pageComposition={
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
+    {EOL_LOCK_FLAG_ADR,EOL_LOCK_FLAG_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
   .dataOffset_u8 = 0,
   .dataLen_u8 = 0,
-  .position_u8 = 0,
   .writeRequest_b = false
  },
+ /* Reprogramming Flag */
  {
   .startAdress_u32=REPROG_FLAG_ADDRESS,
   .crc32Ethernet_32 = 0,
   .pageCopy_u8 = {0},
   .pageComposition={
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
+    {REPROG_FLAG_ADDRESS,REPROG_FLAG_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
   .dataOffset_u8 = 0,
   .dataLen_u8 = 0,
-  .position_u8 = 0,
   .writeRequest_b = false
  },
 };
@@ -156,36 +118,7 @@ void NvmMngr_Run_(void)
     uint32_t l_iterator_u32 = 0;
     uint32_t l_candidate_u32 = 0;
     uint32_t l_fifoOrder_u32 = 0xFF;    //32
-    /*If there is a request to write I increment the prelationFactor*/
-  //  for(l_iterator_u32=0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
-  //  {
-  //    /*If there is an erase request, it will be served as soon as possible*/
-  //    if((true==NvmMngr_NvmBlock_[l_candidate_u32].eraseRequest_b)&&
-  //      (0==mcal_get_nvmOpResult_u8())
-  //    )
-  //    {
-  //      /** \todo Check if the erasing has been successful*/
-  //      user_nvm_page_erase(NvmMngr_NvmBlock_[l_candidate_u32].startAdress_u32,1u);
-  //      /* Erase the copy of the block to be erased*/
-  //      PageReset_(NvmMngr_NvmBlock_[l_candidate_u32].pageCopy_u8);
-  //      NvmMngr_NvmBlock_[l_candidate_u32].eraseRequest_b = false;
-  //      NvmMngr_NvmBlock_[l_candidate_u32].writeRequest_b = false;
-  //      NvmMngr_NvmBlock_[l_candidate_u32].prelationFactor_u8 = 0;
-  //    }
-      /*At every cicle check if there is a writeReq and the saturation factor*/
-  //    if(true == NvmMngr_NvmBlock_[l_iterator_u32].writeRequest_b)
-  //      
-  //    {
-  //      /*If there is it, the prelactionFactor will be increased*/
-  //      NvmMngr_NvmBlock_[l_iterator_u32].prelationFactor_u8=fifoList;
-  //      fifoList++;
-  //    }
-  //    else
-  //    {
-  //      NvmMngr_NvmBlock_[l_iterator_u32].prelationFactor_u8=0;
-  //    }
-      
-  //  }
+
     /*Find the block that has arrived first*/
     for(l_iterator_u32 = 0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
     {
@@ -225,6 +158,7 @@ void NvmMngr_Run_(void)
   }
 }
 
+
 void PageReset_(uint8_t page_u8[PAGE_LEN])
 {
   uint8_t l_iterator_u32 = 0;
@@ -240,17 +174,20 @@ void PageReset_(uint8_t page_u8[PAGE_LEN])
 bool WriteRequest_(NvmMngr_PageAddr_t pageToWrite_,uint8_t* data,uint8 pagePosition_u8)
 {
   bool l_requestAccepted =  false;
+  /* len of the data to write */
   uint8 dataToWriteLen = NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataLen_u8;
+  /*Position used in the pageCopy_u8 */
   uint32 relativeArrPos =  NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataAdress_u32-
     NvmMngr_NvmBlock_[pageToWrite_].startAdress_u32;
-  /*The request will be accepted only if there is not another one*/
+  /*The request will be accepted for the first data to write in the page*/
   if(NvmMngr_NvmBlock_[pageToWrite_].writeRequest_b != true)
   {
+    
     NvmMngr_NvmBlock_[pageToWrite_].writeRequest_b = true;
     NvmMngr_NvmBlock_[pageToWrite_].prelationFactor_u8=fifoList;
     fifoList++; 
   }
-  NvmMngr_NvmBlock_[pageToWrite_].position_u8 = pagePosition_u8;
+  /* Copy the data in the pageCopy_u8 the relative position */
   for(uint32_t l_iterator_u32=0;l_iterator_u32<dataToWriteLen ;l_iterator_u32++)
   {
     NvmMngr_NvmBlock_[pageToWrite_].pageCopy_u8[relativeArrPos+l_iterator_u32] = *data;
@@ -259,6 +196,38 @@ bool WriteRequest_(NvmMngr_PageAddr_t pageToWrite_,uint8_t* data,uint8 pagePosit
   l_requestAccepted = true;
   return l_requestAccepted;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
