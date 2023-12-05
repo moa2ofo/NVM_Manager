@@ -27,8 +27,6 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
 //    {DID_F1D5_ADRESS,DID_F1D5_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0,
   .writeRequest_b = false
 
  },
@@ -49,8 +47,6 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
     {DID_F1A3_ADRESS,DID_F1A3_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0,
   .writeRequest_b = false
 
  },
@@ -63,8 +59,6 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
     {RESET_CNT_ADR,RESET_CNT_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0,
   .writeRequest_b = false
 
  },
@@ -77,8 +71,6 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
     {CALIBRATION_ADR,CALIBRATION_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0,
   .writeRequest_b = false
  },
  /*EOL Flag */
@@ -90,8 +82,6 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
     {EOL_LOCK_FLAG_ADR,EOL_LOCK_FLAG_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0,
   .writeRequest_b = false
  },
  /* Reprogramming Flag */
@@ -103,8 +93,6 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
     {REPROG_FLAG_ADDRESS,REPROG_FLAG_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0,
   .writeRequest_b = false
  },
 };

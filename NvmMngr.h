@@ -6,12 +6,15 @@
 
 #define PAGE_LEN 128u
 
+
+
 typedef struct NvmMngr_DataParameter_s 
 {
   uint32_t dataAdress_u32;
   uint8_t  dataLen_u8;
 }NvmMngr_DataParameter_t;
 
+/* Struct to reprasent some features of a page */
 typedef struct NvmMngr_NvmBlock_s 
 {
   uint32_t startAdress_u32;
@@ -19,11 +22,10 @@ typedef struct NvmMngr_NvmBlock_s
   uint8_t  pageCopy_u8[PAGE_LEN];
   NvmMngr_DataParameter_t pageComposition[10];
   uint8_t  prelationFactor_u8;
-  uint8_t  dataOffset_u8;
-  uint8_t  dataLen_u8;
   bool     writeRequest_b;
 }NvmMngr_NvmBlock_t;
 
+/* Enum that contain each page to write*/
 typedef enum NvmMngr_PageAddr_e
 {
 	FLASH_DID           = 0,     
@@ -35,6 +37,8 @@ typedef enum NvmMngr_PageAddr_e
 	N_PAGE_COPY         = 6 
 }NvmMngr_PageAddr_t;
 
+
+/* Enum that contain the position of each data in a single page*/
 typedef enum NvmMngr_Flash_Did_Page_e
 {
   FLASH_PAGE_1_F194=0,
@@ -60,6 +64,28 @@ typedef enum NvmMngr_Firmly_Did_Page_e
   FIRMLY_PAGE_8_F197,
   FIRMLY_PAGE_9_F1A3  
 }NvmMngr_Firmly_Did_Page_e;
+
+typedef enum NvmMngr_Reset_Page_e
+{
+  RESET_REASON_PAGE_0=0
+}NvmMngr_Reset_Page_e;
+
+typedef enum NvmMngr_Calibration_Page_e
+{
+  CALIBRATION_PAGE_0=0
+}NvmMngr_Calibration_Page_e;
+
+typedef enum NvmMngr_EolFlag_Page_e
+{
+  EOL_FLAG_PAGE_0=0
+}NvmMngr_EolFlag_Page_e;
+
+typedef enum NvmMngr_ReprogrammingFlag_Page_e
+{
+  REPROGRAMMING_FLAG_PAGE_0=0
+}NvmMngr_ReprogrammingFlag_Page_e;
+
+
 
 void NvmMngr_Run_(void);//(NvmMngr_NvmBlock_t NvmMngr_NvmBlock_);
 void PageReset_(uint8_t page_u8[PAGE_LEN]);
