@@ -18,13 +18,13 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
   .pageCopy_u8 = {0},
   .pageComposition={
     {DID_F194_ADRESS,DID_F194_SIZE},
-//    {DID_F195_ADRESS,DID_F195_SIZE},
-//    {DID_040F_ADRESS,DID_040F_SIZE},
-//    {DID_F187_ADRESS,DID_F187_SIZE},
-//    {DID_F189_ADRESS,DID_F189_SIZE},
-//    {DID_F19E_ADRESS,DID_F19E_SIZE},
-//    {DID_F1A2_ADRESS,DID_F1A2_SIZE},
-//    {DID_F1D5_ADRESS,DID_F1D5_SIZE}
+    {DID_F195_ADRESS,DID_F195_SIZE},
+    {DID_040F_ADRESS,DID_040F_SIZE},
+    {DID_F187_ADRESS,DID_F187_SIZE},
+    {DID_F189_ADRESS,DID_F189_SIZE},
+    {DID_F19E_ADRESS,DID_F19E_SIZE},
+    {DID_F1A2_ADRESS,DID_F1A2_SIZE},
+    {DID_F1D5_ADRESS,DID_F1D5_SIZE}
   },
   .prelationFactor_u8 = 0xFF,
   .writeRequest_b = false
@@ -103,12 +103,11 @@ void NvmMngr_Run_(void)
   /* There is at least one request */
   if(fifoList > 0)
   {
-    uint32_t l_iterator_u32 = 0;
     uint32_t l_candidate_u32 = 0;
     uint32_t l_fifoOrder_u32 = 0xFF;    //32
 
     /*Find the block that has arrived first*/
-    for(l_iterator_u32 = 0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
+    for(uint32_t l_iterator_u32 = 0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
     {
       if((true ==NvmMngr_NvmBlock_[l_iterator_u32].writeRequest_b)
         &&(NvmMngr_NvmBlock_[l_iterator_u32].prelationFactor_u8<l_fifoOrder_u32)
@@ -118,9 +117,10 @@ void NvmMngr_Run_(void)
         l_candidate_u32=l_iterator_u32;
       }
     }
+    /** \todo Test this condition*/
     /* check if the peripheral is free */
-    //if(0==mcal_get_nvmOpResult_u8())
-    //{
+    if(0==mcal_get_nvmOpResult_u8())
+    {
       if(true == NvmMngr_NvmBlock_[l_candidate_u32].writeRequest_b)
       {
 
@@ -136,26 +136,26 @@ void NvmMngr_Run_(void)
         PMU_serviceFailSafeWatchdog();
         /* reenable suspended interrupts */
         CMSIS_Irq_En();
-        /**\todo Check if the writing has been successful*/
+        /* Reset the prelation factor and the request*/
         NvmMngr_NvmBlock_[l_candidate_u32].prelationFactor_u8=0xFF;
         NvmMngr_NvmBlock_[l_candidate_u32].writeRequest_b=false;
         /* Add a free place in the list for the next block*/
         fifoList--;
       }
-    //}
+    }
   }
 }
 
 
-void PageReset_(uint8_t page_u8[PAGE_LEN])
-{
-  uint8_t l_iterator_u32 = 0;
-  while(l_iterator_u32<PAGE_LEN)
-  {
-    page_u8[l_iterator_u32] = 0;
-    l_iterator_u32++;
-  }
-}
+//void PageReset_(uint8_t page_u8[PAGE_LEN])
+//{
+//  uint8_t l_iterator_u32 = 0;
+//  while(l_iterator_u32<PAGE_LEN)
+//  {
+//    page_u8[l_iterator_u32] = 0;
+//    l_iterator_u32++;
+//  }
+//}
 
 
 
@@ -163,25 +163,29 @@ bool WriteRequest_(NvmMngr_PageAddr_t pageToWrite_,uint8_t* data,uint8 pagePosit
 {
   bool l_requestAccepted =  false;
   /* len of the data to write */
-  uint8 dataToWriteLen = NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataLen_u8;
+  uint32 l_dataToWriteLen_u32 = NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataLen_u8;
   /*Position used in the pageCopy_u8 */
-  uint32 relativeArrPos =  NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataAdress_u32-
+  uint32 l_relativeArrPos_u32 =  NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataAdress_u32-
     NvmMngr_NvmBlock_[pageToWrite_].startAdress_u32;
   /*The request will be accepted for the first data to write in the page*/
   if(NvmMngr_NvmBlock_[pageToWrite_].writeRequest_b != true)
   {
     
     NvmMngr_NvmBlock_[pageToWrite_].writeRequest_b = true;
+    /* The page is added to the FIFO list*/
     NvmMngr_NvmBlock_[pageToWrite_].prelationFactor_u8=fifoList;
+    l_requestAccepted = true;
+    /* Increment the position for the next request */
     fifoList++; 
   }
   /* Copy the data in the pageCopy_u8 the relative position */
-  for(uint32_t l_iterator_u32=0;l_iterator_u32<dataToWriteLen ;l_iterator_u32++)
+  for(uint32_t l_iterator_u32=0;l_iterator_u32<l_dataToWriteLen_u32 ;l_iterator_u32++)
   {
-    NvmMngr_NvmBlock_[pageToWrite_].pageCopy_u8[relativeArrPos+l_iterator_u32] = *data;
+    /* Write the datra in the copyPage contained in ram */
+    NvmMngr_NvmBlock_[pageToWrite_].pageCopy_u8[l_relativeArrPos_u32+l_iterator_u32] = *data;
     data++;      
   }
-  l_requestAccepted = true;
+
   return l_requestAccepted;
 }
 

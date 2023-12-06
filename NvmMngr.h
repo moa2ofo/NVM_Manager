@@ -63,27 +63,27 @@ typedef enum NvmMngr_Firmly_Did_Page_e
   FIRMLY_PAGE_7_F191,
   FIRMLY_PAGE_8_F197,
   FIRMLY_PAGE_9_F1A3  
-}NvmMngr_Firmly_Did_Page_e;
+}NvmMngr_Firmly_Did_Page_t;
 
 typedef enum NvmMngr_Reset_Page_e
 {
   RESET_REASON_PAGE_0=0
-}NvmMngr_Reset_Page_e;
+}NvmMngr_Reset_Page_t;
 
 typedef enum NvmMngr_Calibration_Page_e
 {
   CALIBRATION_PAGE_0=0
-}NvmMngr_Calibration_Page_e;
+}NvmMngr_Calibration_Page_t;
 
 typedef enum NvmMngr_EolFlag_Page_e
 {
   EOL_FLAG_PAGE_0=0
-}NvmMngr_EolFlag_Page_e;
+}NvmMngr_EolFlag_Page_t;
 
 typedef enum NvmMngr_ReprogrammingFlag_Page_e
 {
   REPROGRAMMING_FLAG_PAGE_0=0
-}NvmMngr_ReprogrammingFlag_Page_e;
+}NvmMngr_ReprogrammingFlag_Page_t;
 
 
 
