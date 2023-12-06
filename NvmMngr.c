@@ -5,188 +5,222 @@
 #include "bootrom.h"
 #include "product_cfg.h"
 
-static uint8_t fifoList = 0;
+static uint8_t fifoPrelation_u8 = 0;
 
-
+static NvmMngr_NvmPageCopy_t NvmMngr_NvmPageCopy_[] =
+{
+  {
+    .pageCopy_u8 = {0},
+    .posListFifo_u8 = 0xFF,
+    .writeReq_b = false,
+    .startAddrPage = FLASH_DID_ADRESS
+  },
+  {
+    .pageCopy_u8 = {0},
+    .writeReq_b = false,
+    .startAddrPage = EOL_DID_START_ADR
+  },
+  {
+    .pageCopy_u8 = {0},
+    .posListFifo_u8 = 0xFF,
+    .writeReq_b = false,
+    .startAddrPage = RESET_CNT_ADR
+  },
+  {
+    .pageCopy_u8 = {0},
+    .posListFifo_u8 = 0xFF,
+    .writeReq_b = false,
+    .startAddrPage = CALIBRATION_ADR
+  },
+  {
+    .pageCopy_u8 = {0},
+    .posListFifo_u8 = 0xFF,
+    .writeReq_b = false,
+    .startAddrPage = EOL_LOCK_FLAG_ADR
+  },
+  {
+    .pageCopy_u8 = {0},
+    .posListFifo_u8 = 0xFF,
+    .writeReq_b = false,
+    .startAddrPage = REPROG_FLAG_ADDRESS
+  },
+};
 
 static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] = 
 {
- /* Flash Did */
- {
-  .startAdress_u32=FLASH_DID_ADRESS,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .pageComposition={
-    {DID_F194_ADRESS,DID_F194_SIZE},
-    {DID_F195_ADRESS,DID_F195_SIZE},
-    {DID_040F_ADRESS,DID_040F_SIZE},
-    {DID_F187_ADRESS,DID_F187_SIZE},
-    {DID_F189_ADRESS,DID_F189_SIZE},
-    {DID_F19E_ADRESS,DID_F19E_SIZE},
-    {DID_F1A2_ADRESS,DID_F1A2_SIZE},
-    {DID_F1D5_ADRESS,DID_F1D5_SIZE}
+  /* Flash Did */
+  {
+    .dataLen    = DID_F194_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F194_ADRESS
   },
-  .prelationFactor_u8 = 0xFF,
-  .writeRequest_b = false
-
- },
- /* Firmly Did */
- {
-  .startAdress_u32=EOL_DID_START_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .pageComposition={
-    {DID_F18B_ADRESS,DID_F18B_SIZE},
-    {DID_F1F0_ADRESS,DID_F1F0_SIZE},
-    {DID_F192_ADRESS,DID_F192_SIZE},
-    {DID_F193_ADRESS,DID_F193_SIZE},
-    {DID_F18A_ADRESS,DID_F18A_SIZE},
-    {DID_F17C_ADRESS,DID_F17C_SIZE},
-    {DID_F191_ADRESS,DID_F191_SIZE},
-    {DID_F197_ADRESS,DID_F197_SIZE},
-    {DID_F1A3_ADRESS,DID_F1A3_SIZE}
+  {
+    .dataLen    = DID_F195_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F195_ADRESS
   },
-  .prelationFactor_u8 = 0xFF,
-  .writeRequest_b = false
-
- },
- /* Reset reason */
- {
-  .startAdress_u32=RESET_CNT_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .pageComposition={
-    {RESET_CNT_ADR,RESET_CNT_SIZE}
+  {
+    .dataLen    = DID_040F_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_040F_ADRESS
   },
-  .prelationFactor_u8 = 0xFF,
-  .writeRequest_b = false
-
- },
- /* Calibration */
- {
-  .startAdress_u32=CALIBRATION_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .pageComposition={
-    {CALIBRATION_ADR,CALIBRATION_SIZE}
+  {
+    .dataLen    = DID_F187_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F189_ADRESS
   },
-  .prelationFactor_u8 = 0xFF,
-  .writeRequest_b = false
- },
- /*EOL Flag */
- {
-  .startAdress_u32=EOL_LOCK_FLAG_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .pageComposition={
-    {EOL_LOCK_FLAG_ADR,EOL_LOCK_FLAG_SIZE}
+  {
+    .dataLen    = DID_F19E_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F19E_ADRESS
   },
-  .prelationFactor_u8 = 0xFF,
-  .writeRequest_b = false
- },
- /* Reprogramming Flag */
- {
-  .startAdress_u32=REPROG_FLAG_ADDRESS,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .pageComposition={
-    {REPROG_FLAG_ADDRESS,REPROG_FLAG_SIZE}
+  {
+    .dataLen    = DID_F19E_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F19E_ADRESS
   },
-  .prelationFactor_u8 = 0xFF,
-  .writeRequest_b = false
- },
+  {
+    .dataLen    = DID_F1A2_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F1A2_ADRESS
+  },
+  {
+    .dataLen    = DID_F1D5_SIZE,
+    .belongPage = FLASH_DID_PAGE,
+    .addrData   = DID_F1D5_ADRESS
+  },
+  /* Firmly Did */  
+  {
+    .dataLen    = DID_F18B_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F18B_ADRESS
+  },
+  {
+    .dataLen    = DID_F1F0_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F1F0_ADRESS
+  },
+  {
+    .dataLen    = DID_F192_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F192_ADRESS
+  },
+  {
+    .dataLen    = DID_F193_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F193_ADRESS
+  },
+  {
+    .dataLen    = DID_F18A_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F18A_ADRESS
+  },
+  {
+    .dataLen    = DID_F17C_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F17C_ADRESS
+  },
+  {
+    .dataLen    = DID_F191_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F191_ADRESS
+  },
+  {
+    .dataLen    = DID_F197_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F197_ADRESS
+  },
+  {
+    .dataLen    = DID_F1A3_SIZE,
+    .belongPage = FIRMLY_DID_PAGE,
+    .addrData   = DID_F1A3_ADRESS
+  },
+  /* Reset reason */
+  {
+    .dataLen    = RESET_CNT_SIZE,
+    .belongPage = RESET_REASON_PAGE,
+    .addrData   = RESET_CNT_ADR
+  },
+  /* Calibration */
+  {
+    .dataLen    = CALIBRATION_SIZE,
+    .belongPage = CALIBRATION_PAGE,
+    .addrData   = CALIBRATION_ADR
+  },
+  /* EOL Flag */
+  {
+    .dataLen    = EOL_LOCK_FLAG_SIZE,
+    .belongPage = EOL_FLAG_PAGE,
+    .addrData   = EOL_LOCK_FLAG_ADR
+  },
+  /* Reprogramming Flag */
+  {
+    .dataLen    = REPROG_FLAG_SIZE,
+    .belongPage = REPROGRAMMING_FLAG_PAGE,
+    .addrData   = REPROG_FLAG_ADDRESS
+  },
 };
+
+
 
 
 void NvmMngr_Run_(void)
 {
-  /* There is at least one request */
-  if(fifoList > 0)
+  for(uint32_t l_iterator_u32 = 0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
   {
-    uint32_t l_candidate_u32 = 0;
-    uint32_t l_fifoOrder_u32 = 0xFF;    //32
-
-    /*Find the block that has arrived first*/
-    for(uint32_t l_iterator_u32 = 0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
+    /* If there is at leat a data to write and the peripheral is not busy*/
+    if(true == NvmMngr_NvmPageCopy_[l_iterator_u32].writeReq_b && 0==mcal_get_nvmOpResult_u8())
     {
-      if((true ==NvmMngr_NvmBlock_[l_iterator_u32].writeRequest_b)
-        &&(NvmMngr_NvmBlock_[l_iterator_u32].prelationFactor_u8<l_fifoOrder_u32)
-      )
-      {
-        l_fifoOrder_u32=NvmMngr_NvmBlock_[l_iterator_u32].prelationFactor_u8;
-        l_candidate_u32=l_iterator_u32;
-      }
-    }
-    /** \todo Test this condition*/
-    /* check if the peripheral is free */
-    if(0==mcal_get_nvmOpResult_u8())
-    {
-      if(true == NvmMngr_NvmBlock_[l_candidate_u32].writeRequest_b)
-      {
-
-        user_nvm_page_write_t l_pageSource_ = {0};
-        l_pageSource_.data = &NvmMngr_NvmBlock_[l_candidate_u32].pageCopy_u8[0]; 
-        l_pageSource_.nbyte = PAGE_LEN;
-        (void)CMSIS_Irq_Dis();
-        /* Open SOW */
-        PMU_serviceFailSafeWatchdogSOW();
-        /* Write to the first page into the user data area of FLASH0 */
-        user_nvm_write(NvmMngr_NvmBlock_[l_candidate_u32].startAdress_u32, &l_pageSource_);
-        /* Close SOW by regular WDT trigger */
-        PMU_serviceFailSafeWatchdog();
-        /* reenable suspended interrupts */
-        CMSIS_Irq_En();
-        /* Reset the prelation factor and the request*/
-        NvmMngr_NvmBlock_[l_candidate_u32].prelationFactor_u8=0xFF;
-        NvmMngr_NvmBlock_[l_candidate_u32].writeRequest_b=false;
-        /* Add a free place in the list for the next block*/
-        fifoList--;
-      }
-    }
+      /*Copy the entire copy of the page in NVM*/
+      user_nvm_page_write_t l_pageSource_ = {0};
+      l_pageSource_.data = &NvmMngr_NvmPageCopy_[l_iterator_u32].pageCopy_u8[0]; 
+      l_pageSource_.nbyte = PAGE_LEN;
+      l_pageSource_.options = 1u;
+      (void)CMSIS_Irq_Dis();
+      /* Open SOW */
+      PMU_serviceFailSafeWatchdogSOW();
+      /* Write to the first page into the user data area of FLASH0 */
+      user_nvm_write(NvmMngr_NvmPageCopy_[l_iterator_u32].startAddrPage, &l_pageSource_);
+      /* Close SOW by regular WDT trigger */
+      PMU_serviceFailSafeWatchdog();
+      /* reenable suspended interrupts */
+      CMSIS_Irq_En();
+      /* Reset the prelation factor and the request*/
+      NvmMngr_NvmPageCopy_[l_iterator_u32].writeReq_b=false;
+      /* Add a free place in the list for the next block*/
+      NvmMngr_NvmPageCopy_[l_iterator_u32].posListFifo_u8 = 0xFF;
+      fifoPrelation_u8--;
+      
+    } 
   }
 }
 
 
-//void PageReset_(uint8_t page_u8[PAGE_LEN])
-//{
-//  uint8_t l_iterator_u32 = 0;
-//  while(l_iterator_u32<PAGE_LEN)
-//  {
-//    page_u8[l_iterator_u32] = 0;
-//    l_iterator_u32++;
-//  }
-//}
 
 
 
-bool WriteRequest_(NvmMngr_PageAddr_t pageToWrite_,uint8_t* data,uint8 pagePosition_u8)
+/* Handles the request to write in NVM of tghe other modules */
+void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8_t* data)
 {
-  bool l_requestAccepted =  false;
-  /* len of the data to write */
-  uint32 l_dataToWriteLen_u32 = NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataLen_u8;
-  /*Position used in the pageCopy_u8 */
-  uint32 l_relativeArrPos_u32 =  NvmMngr_NvmBlock_[pageToWrite_].pageComposition[pagePosition_u8].dataAdress_u32-
-    NvmMngr_NvmBlock_[pageToWrite_].startAdress_u32;
-  /*The request will be accepted for the first data to write in the page*/
-  if(NvmMngr_NvmBlock_[pageToWrite_].writeRequest_b != true)
-  {
-    
-    NvmMngr_NvmBlock_[pageToWrite_].writeRequest_b = true;
-    /* The page is added to the FIFO list*/
-    NvmMngr_NvmBlock_[pageToWrite_].prelationFactor_u8=fifoList;
-    l_requestAccepted = true;
-    /* Increment the position for the next request */
-    fifoList++; 
-  }
+  uint8_t   l_pageToWrite_u8 = NvmMngr_NvmBlock_[dataToWrite_].belongPage;
+  uint32_t l_pageStartAdd_u32 = NvmMngr_NvmPageCopy_[l_pageToWrite_u8].startAddrPage;
+  uint32_t l_dataStartAdd_u32 = NvmMngr_NvmBlock_[dataToWrite_].addrData;
+  uint32_t  l_relativeArrPos_u32 = l_dataStartAdd_u32-l_pageStartAdd_u32;
+  uint32_t l_dataLen_u32 = NvmMngr_NvmBlock_[dataToWrite_].dataLen;
+  NvmMngr_NvmPageCopy_[l_pageToWrite_u8].writeReq_b = true;
+
   /* Copy the data in the pageCopy_u8 the relative position */
-  for(uint32_t l_iterator_u32=0;l_iterator_u32<l_dataToWriteLen_u32 ;l_iterator_u32++)
+  for(uint32_t l_iterator_u32=0;l_iterator_u32<l_dataLen_u32 ;l_iterator_u32++)
   {
     /* Write the datra in the copyPage contained in ram */
-    NvmMngr_NvmBlock_[pageToWrite_].pageCopy_u8[l_relativeArrPos_u32+l_iterator_u32] = *data;
+    NvmMngr_NvmPageCopy_[l_pageToWrite_u8].pageCopy_u8[l_relativeArrPos_u32+l_iterator_u32] = *data;
     data++;      
   }
-
-  return l_requestAccepted;
+  if(0xFF==NvmMngr_NvmPageCopy_[l_pageToWrite_u8].posListFifo_u8 )
+  {
+    NvmMngr_NvmPageCopy_[l_pageToWrite_u8].posListFifo_u8=fifoPrelation_u8;
+    fifoPrelation_u8++;
+  }  
 }
 
 
