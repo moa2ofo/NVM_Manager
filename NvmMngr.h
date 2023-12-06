@@ -3,8 +3,7 @@
 
 #include "types.h"
 #include "MemoryMap.h"
-
-#define PAGE_LEN 128u
+#include "tle_variants.h"
 
 
 /* Enum that contain each page to write*/
@@ -23,19 +22,19 @@ typedef enum NvmMngr_PageAddr_e
 /* Struct to reprasent some features of a page */
 typedef struct NvmMngr_NvmBlock_s 
 {
-  const uint8_t dataLen;  
+  const uint8 dataLen;  
   const NvmMngr_PageAddr_t belongPage;
-  const uint32_t addrData; 
+  const uint32 addrData; 
 }NvmMngr_NvmBlock_t;
 
 
-
+/* Strut that contain information about the copy in the ram */
 typedef struct NvmMngr_NvmPageCopy_s 
 {
-  uint8_t pageCopy_u8[PAGE_LEN];
-  uint8_t posListFifo_u8; 
+  uint8 pageCopy_u8[UC_FLASH_PAGE_SIZE];
+  uint8 posListFifo_u8; 
   bool writeReq_b;
-  const uint32_t startAddrPage;
+  const uint32 startAddrPage;
 }NvmMngr_NvmPageCopy_t;
 
 
@@ -59,12 +58,16 @@ typedef enum NvmMngr_DataPosition_e
   DID_F17C_13,  
   DID_F191_14,  
   DID_F197_15, 
-  DID_F1A3_16  
+  DID_F1A3_16,
+  RESET_REASON_17,
+  CALIBRATION_18,
+  EOL_FLAG_19,
+  REPROGRAMMING_FLAG_20
 }NvmMngr_DataPosition_t;
 
 
-void NvmMngr_Run_(void);//(NvmMngr_NvmBlock_t NvmMngr_NvmBlock_);
-void WriteRequest_(NvmMngr_DataPosition_t pageToWrite_,uint8_t* data);
+void NvmMngr_Run_(void);
+void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data);
 
 
 #endif
