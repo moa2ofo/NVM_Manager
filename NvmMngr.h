@@ -19,7 +19,7 @@ typedef enum NvmMngr_PageAddr_e
 }NvmMngr_PageAddr_t;
 
 
-/* Struct to reprasent some features of a page */
+/* Struct to represent some features of a page */
 typedef struct NvmMngr_NvmBlock_s 
 {
   const uint8 dataLen;  
@@ -28,7 +28,7 @@ typedef struct NvmMngr_NvmBlock_s
 }NvmMngr_NvmBlock_t;
 
 
-/* Strut that contain information about the copy in the ram */
+/* Struct that contains information about the copy in the ram */
 typedef struct NvmMngr_NvmPageCopy_s 
 {
   uint8 pageCopy_u8[UC_FLASH_PAGE_SIZE];

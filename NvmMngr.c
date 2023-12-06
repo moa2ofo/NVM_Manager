@@ -165,11 +165,12 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
 
 void NvmMngr_Run_(void)
 {
+  /* Check if there is al least one page to copy in NVM*/
   if(fifoPrelation_u8>0)
   {
     uint32 l_candidate_u32 = 0;
     uint32 l_fifoOrder_u32 = 0xFF;
-    /*Find the block that has arrived first*/
+    /*Find the first block that has request to be served */
     for(uint32 l_iterator_u32 = 0; l_iterator_u32<N_PAGE_COPY; l_iterator_u32++)
     {
       if((true ==NvmMngr_NvmPageCopy_[l_iterator_u32].writeReq_b)
@@ -184,15 +185,15 @@ void NvmMngr_Run_(void)
     /* If there is at leat a data to write and the peripheral is not busy*/
     if(true == NvmMngr_NvmPageCopy_[l_candidate_u32].writeReq_b && 0==mcal_get_nvmOpResult_u8())
     {
-      /*Copy the entire copy of the page in NVM*/
       user_nvm_page_write_t l_pageSource_ = {0};
       l_pageSource_.data = &NvmMngr_NvmPageCopy_[l_candidate_u32].pageCopy_u8[0]; 
       l_pageSource_.nbyte = UC_FLASH_PAGE_SIZE;
+      /* To disable the RWW option*/
       l_pageSource_.options = 1u;
       (void)CMSIS_Irq_Dis();
       /* Open SOW */
       PMU_serviceFailSafeWatchdogSOW();
-      /* Write to the first page into the user data area of FLASH0 */
+      /* Write the entire data */
       user_nvm_write(NvmMngr_NvmPageCopy_[l_candidate_u32].startAddrPage, &l_pageSource_);
       /* Close SOW by regular WDT trigger */
       PMU_serviceFailSafeWatchdog();
@@ -202,17 +203,19 @@ void NvmMngr_Run_(void)
       NvmMngr_NvmPageCopy_[l_candidate_u32].writeReq_b=false;
       /* Add a free place in the list for the next block*/
       NvmMngr_NvmPageCopy_[l_candidate_u32].posListFifo_u8 = 0xFF;
+      /* Free a place in the FIFO list*/
       fifoPrelation_u8--; 
     } 
   }
 }
 
-/* Handles the request to write in NVM of tghe other modules */
+/* Handles the request to write in NVM of the other modules */
 void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data)
 {
   uint32   l_pageToWrite_u32 = NvmMngr_NvmBlock_[dataToWrite_].belongPage;
   uint32 l_pageStartAdd_u32 = NvmMngr_NvmPageCopy_[l_pageToWrite_u32].startAddrPage;
   uint32 l_dataStartAdd_u32 = NvmMngr_NvmBlock_[dataToWrite_].addrData;
+  /* Position used to populate the array that rapresents the page*/
   uint32  l_relativeArrPos_u32 = l_dataStartAdd_u32-l_pageStartAdd_u32;
   uint32 l_dataLen_u32 = NvmMngr_NvmBlock_[dataToWrite_].dataLen;
   NvmMngr_NvmPageCopy_[l_pageToWrite_u32].writeReq_b = true;
@@ -224,9 +227,11 @@ void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data)
     NvmMngr_NvmPageCopy_[l_pageToWrite_u32].pageCopy_u8[l_relativeArrPos_u32+l_iterator_u32] = *data;
     data++;      
   }
+  /* A position in the list is assigned only the first time after the page it has been copied*/
   if(0xFF==NvmMngr_NvmPageCopy_[l_pageToWrite_u32].posListFifo_u8 )
   {
     NvmMngr_NvmPageCopy_[l_pageToWrite_u32].posListFifo_u8=fifoPrelation_u8;
+    /* Increment the position for the next page that will enter */
     fifoPrelation_u8++;
   }  
 }
