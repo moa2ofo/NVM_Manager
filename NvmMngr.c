@@ -246,7 +246,7 @@ void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data)
 }
 
 /* Read the data in NVM */
-sint32 NvmMgr_Read_(uint8* output_pu8,NvmMngr_DataPosition_t dataToRead_)
+sint32 NvmMngr_Read_(uint8* output_pu8,NvmMngr_DataPosition_t dataToRead_)
 {
   sint32 l_readingResult_u32 = ERR_LOG_ERROR;
 //  if(output_pu8 != NULL)

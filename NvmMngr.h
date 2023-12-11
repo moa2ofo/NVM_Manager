@@ -69,7 +69,7 @@ typedef enum NvmMngr_DataPosition_e
 void NvmMngr_Run_(void);
 void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data);
 sint32 PageWrite_(void);
-sint32 NvmMgr_Read_(uint8* output_u8,NvmMngr_DataPosition_t dataToWrite_);
+sint32 NvmMngr_Read_(uint8* output_u8,NvmMngr_DataPosition_t dataToWrite_);
 
 
 #endif
