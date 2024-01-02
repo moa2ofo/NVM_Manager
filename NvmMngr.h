@@ -1,12 +1,27 @@
+/*******************************************************************************
+ * \file      NvmMngr.h
+ * \brief     NVM manager
+ * \author    EAD1 SW Team - Andrea Monti
+ * \date      10/12/2023
+ * 
+ * \par       Copyright (c) 2022, VHIT S.p.A. All rights reserved
+ ******************************************************************************/
+
 #ifndef NVMMANAGER_H_
 #define NVMMANAGER_H_
 
+/***************************************************************************//**
+ *  Includes
+ * ****************************************************************************/
 #include "types.h"
 #include "MemoryMap.h"
 #include "tle_variants.h"
 
 
-/* Enum that contain each page to write*/
+/**
+ * \enum    NvmMngr_PageAddr_t
+ * \brief   This enum lists all possible pages that can be written
+ **/
 typedef enum NvmMngr_PageAddr_e
 {
 	FLASH_DID_PAGE           = 0,     
@@ -22,8 +37,11 @@ typedef enum NvmMngr_PageAddr_e
 /* Struct to represent some features of a page */
 typedef struct NvmMngr_NvmBlock_s 
 {
-  const uint8 dataLen;  
+  /*size of the data*/
+  const uint8 dataLen;
+  /*page in which will be written the data*/
   const NvmMngr_PageAddr_t belongPage;
+  /*nvm adress of the data */
   const uint32 addrData; 
 }NvmMngr_NvmBlock_t;
 
@@ -31,15 +49,21 @@ typedef struct NvmMngr_NvmBlock_s
 /* Struct that contains information about the copy in the ram */
 typedef struct NvmMngr_NvmPageCopy_s 
 {
+  /*Contain the data that will be copied in NVM */
   uint8 pageCopy_u8[UC_FLASH_PAGE_SIZE];
+  /*used in the FIFO list */
   uint8 posListFifo_u8; 
+  /*used to requestyo write*/
   bool writeReq_b;
+  /*starting nvm adress of the page*/
   const uint32 startAddrPage;
 }NvmMngr_NvmPageCopy_t;
 
 
-
-/* Enum that contain each page to write*/
+/**
+ * \enum    NvmMngr_DataPosition_t
+ * \brief   This enum lists all possible data that can be written
+ **/
 typedef enum NvmMngr_DataPosition_e
 {
   DID_F194_0=0,  
@@ -68,8 +92,7 @@ typedef enum NvmMngr_DataPosition_e
 
 void NvmMngr_Run_(void);
 void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data);
-sint32 PageWrite_(void);
-sint32 NvmMngr_Read_(uint8* output_u8,NvmMngr_DataPosition_t dataToWrite_);
+void NvmMngr_Read_(uint8* output_u8,NvmMngr_DataPosition_t dataToWrite_);
 
 
 #endif
