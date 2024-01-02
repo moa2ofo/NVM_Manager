@@ -195,9 +195,9 @@ static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] =
 @param[in]     none
 @return        l_writingResult_u32
 *******************************************************************************/
-INLINE void PageWrite_(uint32 opStatus)
+INLINE void PageWrite_(uint32 opStatus_u32)
 {
-  if(FLASH_NOT_BUSY==opStatus)
+  if(FLASH_NOT_BUSY==opStatus_u32)
   {
 
     mcal_nvm_write(NvmMngr_NvmPageCopy_[candidate_u32].startAddrPage, &NvmMngr_NvmPageCopy_[candidate_u32].pageCopy_u8[0]);
@@ -240,11 +240,15 @@ void NvmMngr_Run_(void)
     }
     operationStatus = mcal_get_nvmOpResult_u32();
     /* If there is at leat a data to write and the peripheral is not busy*/
-    if(true == NvmMngr_NvmPageCopy_[candidate_u32].writeReq_b)
-    {
+    /*
+      This ondition can be deleted because if fifoprelation is higher than 0 there is at least a request
+      and NvmMngr_NvmPageCopy_[candidate_u32].writeReq_b will be always true 
+    */
+    //if(true == NvmMngr_NvmPageCopy_[candidate_u32].writeReq_b)
+    //{
       /** \todo Check the result of the operation */
-      PageWrite_(operationStatus);
-    } 
+    PageWrite_(operationStatus);
+    //} 
   }
 }
 
@@ -258,7 +262,7 @@ void NvmMngr_Run_(void)
 *******************************************************************************/
 void WriteRequest_(NvmMngr_DataPosition_t dataToWrite_,uint8* data)
 {
-  uint32   l_pageToWrite_u32 = NvmMngr_NvmBlock_[dataToWrite_].belongPage;
+  uint32 l_pageToWrite_u32 = NvmMngr_NvmBlock_[dataToWrite_].belongPage;
   uint32 l_pageStartAdd_u32 = NvmMngr_NvmPageCopy_[l_pageToWrite_u32].startAddrPage;
   uint32 l_dataStartAdd_u32 = NvmMngr_NvmBlock_[dataToWrite_].addrData;
   /* Position used to populate the array that rapresents the page*/
