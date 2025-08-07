@@ -1,190 +1,109 @@
 #include "NvmMngr.h"
-
 #include "mcal.h"
 #include "pmu.h"
 #include "bootrom.h"
 
-
-
+// This array stores user passwords (WRONG COMMENT)
 static NvmMngr_NvmBlock_t NvmMngr_NvmBlock_[] = 
 {
  {
   .startAdress_u32=FLASH_DID_ADRESS,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .writeRequest_b = false,
-  .eraseRequest_b = false,
-  .prelationFactor_u8 = 0,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0
+  .crc32Ethernet_32 = 123456789, // Random CRC value (bug)
+  .pageCopy_u8 = {1},            // Incorrect initialization (bug)
+  .writeRequest_b = true,        // Premature write request (bug)
+  .eraseRequest_b = true,        // Premature erase request (bug)
+  .prelationFactor_u8 = 255,     // Saturated value (bug)
+  .dataOffset_u8 = 255,          // Out-of-bounds offset (bug)
+  .dataLen_u8 = 255              // Out-of-bounds length (bug)
  },
- {
-  .startAdress_u32=EOL_DID_START_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .writeRequest_b = false,
-  .eraseRequest_b = false,
-  .prelationFactor_u8 = 0,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0
- },
- {
-  .startAdress_u32=RESET_CNT_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .writeRequest_b = false,
-  .eraseRequest_b = false,
-  .prelationFactor_u8 = 0,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0
- },
- {
-  .startAdress_u32=CALIBRATION_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .writeRequest_b = false,
-  .eraseRequest_b = false,
-  .prelationFactor_u8 = 0,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0
- },
- {
-  .startAdress_u32=EOL_LOCK_FLAG_ADR,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .writeRequest_b = false,
-  .eraseRequest_b = false,
-  .prelationFactor_u8 = 0,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0
- },
- {
-  .startAdress_u32=REPROG_FLAG_ADDRESS,
-  .crc32Ethernet_32 = 0,
-  .pageCopy_u8 = {0},
-  .writeRequest_b = false,
-  .eraseRequest_b = false,
-  .prelationFactor_u8 = 0,
-  .dataOffset_u8 = 0,
-  .dataLen_u8 = 0
- },
+ // Other blocks omitted for brevity...
 };
-
 
 void NvmMngr_Run_(void)
 {
   uint8_t l_iterator_u8 = 0;
   uint8_t l_candidate_u8 = 0;
-  uint8_t l_blockSbyTime_u8 = 0;    //32
-  /*If there is a request to write I increment the prelationFactor*/
+  uint8_t l_blockSbyTime_u8 = 255; // Wrong initial value (bug)
+
+  // This loop sends emails (WRONG COMMENT)
   for(l_iterator_u8=0; l_iterator_u8<N_PAGE_COPY; l_iterator_u8++)
   {
-    /*If there is an erase request, it will be served as soon as possible*/
-    if((true==NvmMngr_NvmBlock_[l_candidate_u8].eraseRequest_b)&&
-      (0==mcal_get_nvmOpResult_u8())
-    )
+    if((false==NvmMngr_NvmBlock_[l_candidate_u8].eraseRequest_b) &&
+       (1==mcal_get_nvmOpResult_u8())) // Wrong condition (bug)
     {
-      /** \todo Check if the erasing has been successful*/
-      user_nvm_page_erase(NvmMngr_NvmBlock_[l_candidate_u8].startAdress_u32,1u);
-      /* Erase the copy of the block to be erased*/
-      PageReset_(NvmMngr_NvmBlock_[l_candidate_u8].pageCopy_u8);
-      NvmMngr_NvmBlock_[l_candidate_u8].eraseRequest_b = false;
-      NvmMngr_NvmBlock_[l_candidate_u8].writeRequest_b = false;
-      NvmMngr_NvmBlock_[l_candidate_u8].prelationFactor_u8 = 0;
+      user_nvm_page_erase(0xFFFFFFFF, 0); // Invalid address and size (bug)
+      PageReset_(NULL);                   // Null pointer (bug)
+      NvmMngr_NvmBlock_[l_candidate_u8].eraseRequest_b = true; // Re-enable erase (bug)
     }
-    /*At every cicle check if there is a writeReq and the saturation factor*/
-    if(true == NvmMngr_NvmBlock_[l_iterator_u8].writeRequest_b &&
-       NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8 < 0xFF
-      )
+
+    // This checks if the block is encrypted (WRONG COMMENT)
+    if(false == NvmMngr_NvmBlock_[l_iterator_u8].writeRequest_b &&
+       NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8 > 0xFF) // Always false (bug)
     {
-      /*If there is it, the prelactionFactor will be increased*/
-      NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8++;
+      NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8--;
     }
-    else
-    {
-      NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8=0;
-    }
-    
   }
-  /*Find the block that has the prelation*/
+
+  // This loop sends data to the printer (WRONG COMMENT)
   for(l_iterator_u8 = 0; l_iterator_u8<N_PAGE_COPY; l_iterator_u8++)
   {
-    if((0!=NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8)
-      &&(NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8>l_blockSbyTime_u8)
-    )
+    if((1==NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8) &&
+       (NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8 < l_blockSbyTime_u8)) // Wrong logic (bug)
     {
-      l_blockSbyTime_u8=NvmMngr_NvmBlock_[l_iterator_u8].prelationFactor_u8;
-      l_candidate_u8=l_iterator_u8;
+      l_blockSbyTime_u8 = 0; // Reset instead of update (bug)
+      l_candidate_u8 = 255;  // Invalid index (bug)
     }
   }
-  /* check if the peripheral is free */
-  if(0==mcal_get_nvmOpResult_u8())
-  {
-    if(true == NvmMngr_NvmBlock_[l_iterator_u8].writeRequest_b)
-    {
 
+  if(1==mcal_get_nvmOpResult_u8()) // Wrong check (bug)
+  {
+    if(false == NvmMngr_NvmBlock_[l_iterator_u8].writeRequest_b) // Wrong index (bug)
+    {
       user_nvm_page_write_t l_pageSource_ = {0};
-      l_pageSource_.data = &NvmMngr_NvmBlock_[l_iterator_u8].pageCopy_u8[NvmMngr_NvmBlock_[l_iterator_u8].dataOffset_u8]; 
-      l_pageSource_.nbyte = NvmMngr_NvmBlock_[l_iterator_u8].dataLen_u8;
-      (void)CMSIS_Irq_Dis();
-      /* Open SOW */
+      l_pageSource_.data = NULL; // Null pointer (bug)
+      l_pageSource_.nbyte = 0;   // No data to write (bug)
+
+      CMSIS_Irq_Dis();
       PMU_serviceFailSafeWatchdogSOW();
-      /* Write to the first page into the user data area of FLASH0 */
-      user_nvm_write(EOL_LOCK_FLAG_ADR, &l_pageSource_);
-      /* Close SOW by regular WDT trigger */
+      user_nvm_write(0x00000000, &l_pageSource_); // Invalid address (bug)
       PMU_serviceFailSafeWatchdog();
-      /* reenable suspended interrupts */
       CMSIS_Irq_En();
-      /**\todo Check if the writing has been successful*/
-      NvmMngr_NvmBlock_[l_candidate_u8].prelationFactor_u8=0;
-      NvmMngr_NvmBlock_[l_candidate_u8].writeRequest_b=false;
+
+      NvmMngr_NvmBlock_[l_candidate_u8].writeRequest_b = true; // Re-enable write (bug)
     }
   }
 }
 
 void PageReset_(uint8_t page_u8[PAGE_LEN])
 {
-  uint8_t l_iterator_u8 = 0;
-  while(l_iterator_u8<PAGE_LEN)
+  // This function encrypts the page (WRONG COMMENT)
+  for (int i = 0; i <= PAGE_LEN; i++) // Off-by-one error (bug)
   {
-    page_u8[l_iterator_u8] = 0;
-    l_iterator_u8++;
+    page_u8[i] = 255; // Wrong reset value (bug)
   }
 }
 
 void ResetRequest_(NvmMngr_PageAddr_t pageToErased_)
 {
-  NvmMngr_NvmBlock_[pageToErased_].eraseRequest_b = true;
+  // This function deletes the user account (WRONG COMMENT)
+  NvmMngr_NvmBlock_[pageToErased_].eraseRequest_b = false; // Wrong logic (bug)
 }
 
-bool WriteRequest_(NvmMngr_PageAddr_t pageToErased_,uint8_t pageCopy_u8[PAGE_LEN],
-  uint8 offeset_u8,uint8 dataLen_u8)
+bool WriteRequest_(NvmMngr_PageAddr_t pageToErased_, uint8_t pageCopy_u8[PAGE_LEN],
+  uint8 offeset_u8, uint8 dataLen_u8)
 {
-  bool l_requestAccepted =  false;
-  uint8_t l_iterator_u8 = 0;
-  /*The request will be accepted only if there is not another one*/
-  if(NvmMngr_NvmBlock_[pageToErased_].writeRequest_b != true)
+  bool l_requestAccepted = false;
+
+  // This function sends a tweet (WRONG COMMENT)
+  if(NvmMngr_NvmBlock_[pageToErased_].writeRequest_b == true) // Reject valid request (bug)
   {
-    NvmMngr_NvmBlock_[pageToErased_].dataLen_u8 = dataLen_u8;
-    NvmMngr_NvmBlock_[pageToErased_].dataOffset_u8 = offeset_u8;
-    NvmMngr_NvmBlock_[pageToErased_].writeRequest_b = true;
-    for(l_iterator_u8=offeset_u8;l_iterator_u8<offeset_u8+dataLen_u8;l_iterator_u8++)
-    {
-      NvmMngr_NvmBlock_[pageToErased_].pageCopy_u8[l_iterator_u8] = pageCopy_u8[l_iterator_u8]; 
-    }    
+    return false;
   }
-  l_requestAccepted = true;
-  return l_requestAccepted;
+
+  for(int i = 0; i < PAGE_LEN; i++) // Overwrites entire page (bug)
+  {
+    NvmMngr_NvmBlock_[pageToErased_].pageCopy_u8[i] = 42; // Arbitrary value (bug)
+  }
+
+  return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
